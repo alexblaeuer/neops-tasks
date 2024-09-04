@@ -1,0 +1,31 @@
+update_pre_post_run_tasks: false
+tasks:
+- name: Delete Groups
+  uniquetaskname: base.group.workflow.groups.remove
+  description: Delete Groups in neops Inventory
+  provider_identifier: providers.core.neops.io/generic-simple-workflow:1
+  task_kwargs:
+    tasks:
+    - run_as: GLOBAL
+      task_id: 0
+      allow_all: false
+      titleProp: Delete Group Helper
+      task_enabled: true
+      task_template: "{#% set workflow_elements = neops.search_device_groups(\"*\"\
+        ) %#}\n\n{# set some initial variables #}\n{% set params = {\"groups\": []}\
+        \ %}\n\n{# remove selected groups #}\nDelete groups:\n{% for group in workflow_elements\
+        \ %}\n  -- {{ group.name }}\n  {% do params.groups.append({\"id\": group.id})\
+        \ %}\n{% endfor %}\n\n{% do neops.set_params(params) %}"
+      entity_template: '{% do neops.set_entities([]) %}'
+      task_uniquename: base.global.group_inventory_delete.helper.hard
+      task_cache_update: false
+      task_copy_results: false
+      task_include_pre_post: true
+      task_stop_workflow_on_failed: false
+      task_request_to_write_results: true
+      task_request_to_write_pre_post_run_results: false
+    run_as: GROUP
+  task_run_input_schema: {}
+  task_run_filter: ''
+  pre_run: []
+  post_run: []

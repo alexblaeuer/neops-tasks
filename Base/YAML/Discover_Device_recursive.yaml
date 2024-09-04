@@ -1,0 +1,20 @@
+update_pre_post_run_tasks: false
+tasks:
+- name: Discover Device recursive
+  uniquetaskname: base.device.discovery.device.recursive
+  description: Discover Device
+  provider_identifier: providers.core.neops.io/device-discovery:1
+  task_kwargs:
+    recursive: true
+    get_config: true
+    include_clients: false
+    update_hostname: true
+    include_neighbors: true
+    include_interfaces: true
+    remove_controller_device: false
+    add_new_controller_device: false
+    include_controller_device: false
+  task_run_input_schema: {}
+  task_run_filter: ''
+  pre_run: []
+  post_run: []

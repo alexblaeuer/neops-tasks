@@ -1,0 +1,87 @@
+update_pre_post_run_tasks: false
+tasks:
+- name: Update Group
+  uniquetaskname: base.group.workflow.group.update
+  description: Update a Group in neops Inventory
+  provider_identifier: providers.core.neops.io/generic-simple-workflow:1
+  task_kwargs:
+    tasks:
+    - run_as: GLOBAL
+      task_id: 0
+      allow_all: false
+      titleProp: Add/Update Group Helper
+      task_enabled: true
+      task_template: "{#% set workflow_elements = neops.search_device_groups(\"*\"\
+        ) %#}\n\n{# set some initial variables #}\n{% set params = {\"groups\": []}\
+        \ %}\n\n{# check only one group selectet #}\n{% if workflow_elements | count\
+        \ == 1 %}\n\t{% set group = {\"reference_id\": workflow_elements[0].id} %}\n\
+        \  Update group:\n  -- {{ workflow_elements[0].name }}\n  \n  {% if input.get(\"\
+        name\") %}\n    {% do group.update({\"name\": input.get(\"name\")}) %}\n \
+        \ {% endif %}\n  {% if input.get(\"address\") %}\n    {% do group.update({\"\
+        address\": input.get(\"address\"), \"as_location\": true}) %}\n  {% endif\
+        \ %}\n  {% if input.get(\"zip_code\") %}\n    {% do group.update({\"zip_code\"\
+        : input.get(\"zip_code\"), \"as_location\": true}) %}\n  {% endif %}\n  {%\
+        \ if input.get(\"city\") %}\n    {% do group.update({\"city\": input.get(\"\
+        city\"), \"as_location\": true}) %}\n  {% endif %}\n  {% if input.get(\"country\"\
+        ) %}\n    {% do group.update({\"country\": input.get(\"country\"), \"as_location\"\
+        : true}) %}\n  {% endif %}\n  {% if input.get(\"lon\") %}\n    {% do group.update({\"\
+        lon\": input.get(\"lon\"), \"as_location\": true}) %}\n  {% endif %}\n  {%\
+        \ if input.get(\"lat\") %}\n    {% do group.update({\"lat\": input.get(\"\
+        lat\"), \"as_location\": true}) %}\n  {% endif %}\n  \n  {% do params.groups.append(group)\
+        \ %}\n{% else %}\n\tMore than one group selected:\n\t{{ workflow_elements\
+        \ | jmespath(\"[*].name\") }}\n{% endif %}\n\n{% do neops.set_params(params)\
+        \ %}"
+      entity_template: '{% do neops.set_entities([]) %}'
+      task_uniquename: base.global.group_inventory_delete.helper.both
+      task_cache_update: false
+      task_copy_results: false
+      task_include_pre_post: true
+      task_stop_workflow_on_failed: false
+      task_request_to_write_results: true
+      task_request_to_write_pre_post_run_results: false
+    run_as: GROUP
+  task_run_input_schema:
+    $id: https://neops.io/schema/UpdateGroup.json
+    $schema: http://json-schema.org/draft-07/schema#
+    title: Update Group
+    type: object
+    required: []
+    properties:
+      name:
+        type: string
+        title: Name
+        description: Name of the Group
+        default: ''
+      address:
+        type: string
+        title: Street with Number
+        description: Street with Number
+        default: ''
+      zip_code:
+        type: string
+        title: ZIP
+        description: ZIP Code
+        default: ''
+      city:
+        type: string
+        title: City
+        description: City
+        default: ''
+      country:
+        type: string
+        title: Country
+        description: Country
+        default: ''
+      lat:
+        type: number
+        title: Latitude
+        description: Country
+        default: ''
+      lon:
+        type: number
+        title: Longitude
+        description: Longitude
+        default: ''
+  task_run_filter: ''
+  pre_run: []
+  post_run: []

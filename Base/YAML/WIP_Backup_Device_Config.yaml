@@ -1,0 +1,20 @@
+update_pre_post_run_tasks: false
+tasks:
+- name: WIP Backup Device Config
+  uniquetaskname: base.device.discovery.device.cfg.bak
+  description: Backup Device Config
+  provider_identifier: providers.core.neops.io/device-discovery:1
+  task_kwargs:
+    recursive: false
+    get_config: true
+    include_clients: false
+    update_hostname: false
+    include_neighbors: false
+    include_interfaces: false
+    remove_controller_device: false
+    add_new_controller_device: false
+    include_controller_device: false
+  task_run_input_schema: {}
+  task_run_filter: ''
+  pre_run: []
+  post_run: []

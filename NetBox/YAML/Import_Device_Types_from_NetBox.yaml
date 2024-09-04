@@ -1,0 +1,22 @@
+update_pre_post_run_tasks: false
+tasks:
+- name: Import Device Types from NetBox
+  uniquetaskname: nb.gobal.netbox.device_types.import
+  description: Import Device Types from NetBox
+  provider_identifier: providers.core.neops.io/generic-netbox-jinja-facts:1
+  task_kwargs:
+    mapping:
+      add_facts_to: GLOBAL
+      mapping_template: '{% do neops.set_facts(response) %}'
+    facts_key: netbox_device_types
+    run_netbox_on: GLOBAL
+    execute_template: '{% set endpoint = "dcim/device-types/" %}
+
+      {% set response = netbox.get(endpoint) %}
+
+      {% do neops.set_facts(response) %}'
+    write_on_dry_run: false
+  task_run_input_schema: {}
+  task_run_filter: ''
+  pre_run: []
+  post_run: []

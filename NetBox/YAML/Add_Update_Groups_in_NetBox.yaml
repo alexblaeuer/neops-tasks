@@ -1,0 +1,35 @@
+update_pre_post_run_tasks: false
+tasks:
+- name: Add Update Groups in NetBox
+  uniquetaskname: nb.group.netbox.site.add
+  description: Add/Update Groups in NetBox as Site
+  provider_identifier: providers.core.neops.io/generic-netbox-jinja-facts:1
+  task_kwargs:
+    mapping:
+      add_facts_to: GROUP
+      mapping_template: '{% set facts = response.get(group.id, {}) %}
+
+        {% do neops.set_facts(facts) %}'
+    facts_key: netbox
+    run_netbox_on: GLOBAL
+    execute_template: "{#% set device_groups = neops.search_device_groups(\"*\") %#}\n\
+      \n{# set some initial variables #}\n{% set facts = {} %}\n{% set endpoint =\
+      \ \"dcim/sites/\" %}\n\n{% for group in device_groups %}\n\t{% set body = {\"\
+      name\": group.name, \"slug\": group.name | lower, \"status\": \"active\", \"\
+      description\": group.description} %}\n\t{% if group.get(\"location\") %}\n \
+      \ \t{# set address if group is a location #}\n  \t{% set location = group.get(\"\
+      location\") %}\n  \t{% do body.update({\"physical_address\": location.address\
+      \ ~ \", \" ~ location.zip_code ~ \" \" ~ location.city ~ \", \" ~ location.country,\
+      \ \"latitude\": location.lat, \"longitude\": location.lon}) %}\n  {% endif %}\n\
+      \  {% if not group.facts.get(\"netbox\") %}\n  \t{# add group in netbox #}\n\
+      \    -- Add group: {{ group.name }}\n    {% set response = netbox.post(endpoint,\
+      \ body) %}\n    {% do facts.update({group.id: response}) %}\n  {% else %}\n\
+      \  \t{# update group in netbox #}\n    -- Update group: {{ group.name }}\n \
+      \   {% set response = netbox.patch(endpoint ~ group.facts.netbox.get(\"id\"\
+      ), body) %}\n    {% do facts.update({group.id: response}) %}\n  {% endif %}\n\
+      {% endfor %}\n\n{% do neops.set_facts(facts) %}"
+    write_on_dry_run: true
+  task_run_input_schema: {}
+  task_run_filter: ''
+  pre_run: []
+  post_run: []

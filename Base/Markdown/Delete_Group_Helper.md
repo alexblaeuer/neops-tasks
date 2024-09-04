@@ -1,0 +1,52 @@
+# name
+Delete Group Helper
+# uniquetaskname
+base.global.group_inventory_delete.helper.hard
+# description
+Delete Group Helper
+# provider_identifier
+providers.core.neops.io/global-group-delete:1
+# task_kwargs
+## operation_type
+HARD
+# task_run_input_schema
+```json
+{
+  "$id": "https://neops.io/schema/provider/GlobalGroupDeleteProviderInput.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Group Delete Parameters",
+  "type": "object",
+  "required": [],
+  "properties": {
+    "groups": {
+      "type": "array",
+      "title": "Group List",
+      "description": "List of gropus to be deleted",
+      "x-itemTitle": "name",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "ID",
+            "description": "ID of the target Object",
+            "default": ""
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "Name of the existing Device Group Object",
+            "default": ""
+          }
+        }
+      }
+    }
+  }
+}
+```
+# task_run_filter
+
+# pre_run
+[]
+# post_run
+[]
